@@ -1,0 +1,47 @@
+<assembly
+    xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+
+  <id>bin</id>
+
+  <formats>
+    <format>zip</format>
+  </formats>
+
+  <includeBaseDirectory>false</includeBaseDirectory>
+
+   <fileSets>
+    <!--
+      Include Bower dependencies.
+      Omit bower files we don't need.
+    -->
+    <fileSet>
+      <directory>${basedir}/src/app/bower_components</directory>
+      <outputDirectory>/bower_components</outputDirectory>
+      <includes>
+        <include>**</include>
+      </includes>
+      <excludes>
+        <exclude>**/*.md</exclude>
+        <exclude>**/*.json</exclude>
+        <exclude>**/*.gzip</exclude>
+      </excludes>
+    </fileSet>
+
+    <!--
+      Application files.
+    -->
+    <fileSet>
+      <directory>${basedir}/src/app</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>**</include>
+      </includes>
+      <excludes>
+        <exclude>/bower_components/**</exclude>
+      </excludes>
+    </fileSet>
+
+  </fileSets>
+</assembly>

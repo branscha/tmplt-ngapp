@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.branscha</groupId>
+  <artifactId>client</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>Angular Client</name>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>0.0.20</version>
+
+        <executions>
+          <!--
+            Install node.js.
+            Install npm the package manager.
+          -->
+          <execution>
+            <id>install node and npm</id>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+            <configuration>
+              <nodeVersion>v0.10.30</nodeVersion>
+              <npmVersion>1.4.21</npmVersion>
+            </configuration>
+          </execution>
+
+          <!--
+            Execute npm, it will scan package.json and try to  resolve
+            the dependencies into the node_modules/ directory.
+          -->
+          <execution>
+            <id>npm install</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <arguments>install</arguments>
+            </configuration>
+          </execution>
+
+          <!--
+            Download the application javaScript dependencies.
+            These dependencies are used in the app and in the tests.
+            We use bower for this because it uses a flat package structure which is
+            better suited for web applications.
+            See:
+               .bowerrc: target directory
+               bower.json: spec of dependencies
+          -->
+          <execution>
+            <id>bower install</id>
+            <goals>
+              <goal>bower</goal>
+            </goals>
+            <configuration>
+              <arguments>install</arguments>
+            </configuration>
+          </execution>
+
+          <!--
+          <execution>
+              <id>grunt build</id>
+              <goals>
+                  <goal>grunt</goal>
+              </goals>
+              <configuration>
+                  <arguments> - - no-color</arguments>
+              </configuration>
+          </execution>
+          -->
+
+          <!--
+            Execute the JavaScript unit tests.
+          -->
+          <execution>
+            <id>javascript tests</id>
+            <goals>
+              <goal>karma</goal>
+            </goals>
+            <configuration>
+              <karmaConfPath>src/test/karma.conf.ci.js</karmaConfPath>
+            </configuration>
+          </execution>
+
+        </executions>
+      </plugin>
+
+      <plugin>
+        <!--
+          Generate a client zip assembly that we can include in the server.
+          The only reason to package the client like this is to be
+          able to transfer it to the server project.
+        -->
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <finalName>client</finalName>
+          <descriptors>
+            <descriptor>assembly/bin.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<html ng-app="testApp">
+<head>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+</head>
+
+<body>
+<div class="container" ng-controller="MainController as ctrl">
+    <h1>Hello Server</h1>
+    <div>
+        <div class="row">
+            <div class="col-xs-3">
+                <input type="text" ng-model="param" class="form-control" placeholder="Send message to server"/>
+            </div>
+            <div class="col-xs-3">
+                <button ng-click="ctrl.ping(param)" class="btn btn-default">Ping</button>
+                <button ng-click="ctrl.clear()" class="btn btn-default">Clear</button>
+            </div>
+        </div>
+        <p></p>
+
+        <div ng-repeat="msg in ctrl.messages track by $index" style="float:left; padding-right: 5px">
+            <span class="label label-success">{{msg}}</span>
+        </div>
+    </div>
+</div>
+
+<!-- Start the frameworks -->
+<script src="bower_components/angular/angular.min.js"></script>
+
+<!-- Include the application code -->
+<script src="js/test-app.js"></script>
+<script src="js/controllers/main.js"></script>
+<script src="js/services/util.js"></script>
+<script src="js/services/ping.js"></script>
+
+</body>
+</html>

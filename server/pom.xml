@@ -1,0 +1,171 @@
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <name>Angular Server</name>
+  <groupId>org.branscha</groupId>
+  <artifactId>angular-server</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>war</packaging>
+
+  <properties>
+    <spring-version>3.2.8.RELEASE</spring-version>
+    <cxf-version>2.6.10</cxf-version>
+    <jackson-version>2.1.4</jackson-version>
+  </properties>
+
+  <dependencies>
+    <!--
+        Spring Framework
+    -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>${spring-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+      <version>${spring-version}</version>
+    </dependency>
+
+    <!--
+        CXF Core, used by both REST/SOAP front ends.
+        It is the core of the CXF framework it always has to be installed.
+    -->
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-core</artifactId>
+      <version>${cxf-version}</version>
+    </dependency>
+
+    <!--
+        JAX-RS Front End, necessary for REST resources.
+        Its main component is the JAXRSServerFactoryBean.
+        You can leave this front end out if you only want SOAP services.
+           + cxf-fontend-jaxrs = the REST server factory.
+           + cxf-rt-extenstion-providers = a number of REST providers one
+                of these is the JSONProvider<T> which uses Jettison.
+           + jackson = has to be included explicitly for the provider above.
+    -->
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+      <version>${cxf-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-rs-extension-providers</artifactId>
+      <version>${cxf-version}</version>
+    </dependency>
+
+    <!-- JAX-RS Jackson JSON renderer (better then the default/old Jettison -->
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.jaxrs</groupId>
+      <artifactId>jackson-jaxrs-json-provider</artifactId>
+      <version>${jackson-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>${jackson-version}</version>
+    </dependency>
+
+    <!--
+      Pull in the client, we will expand its contents in the current war
+      using the overlay system. Note the SNAPSHOT dependency so we always get
+      the current version from the same project.
+    -->
+    <dependency>
+      <groupId>org.branscha</groupId>
+      <artifactId>client</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <classifier>bin</classifier>
+      <type>zip</type>
+    </dependency>
+
+    <!--
+        Test stuff
+    -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.8.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Support for Spring context in JUnit tests -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <version>${spring-version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Jetty to run CXF in JUnit tests -->
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-transports-http-jetty</artifactId>
+      <version>${cxf-version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <!--
+      Give a fixed name without version number so that the
+      client can find the server independent of the build nr.
+    -->
+    <finalName>angular-webapp</finalName>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.1</version>
+
+        <configuration>
+          <!--
+            Add a manifest to the war with the version number in it.
+            Attach the version number to the war.
+          -->
+          <archive>
+            <manifestEntries>
+              <build>${build.number}</build>
+            </manifestEntries>
+          </archive>
+
+          <attachClasses>true</attachClasses>
+          <classesClassifier>classes</classesClassifier>
+          <warSourceDirectory>src/main/webapp</warSourceDirectory>
+
+          <overlays>
+            <!--
+              Copy the contents of the client zip into the server structure.
+              Its contents are copied to the root ('targetPath' = /) of the war.
+            -->
+            <overlay>
+              <groupId>org.branscha</groupId>
+              <artifactId>client</artifactId>
+              <type>zip</type>
+              <classifier>bin</classifier>
+              <targetPath>/</targetPath>
+            </overlay>
+          </overlays>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

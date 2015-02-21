@@ -41,3 +41,20 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Project ignores
+
+.idea/
+target/
+*.iml
+.ignore
+*.class
+*.jar
+*.war
+*.ear
+
+node/
+npm-debug.log
+dist/
+bower_components/
+node_modules/
